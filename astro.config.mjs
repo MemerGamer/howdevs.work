@@ -13,8 +13,23 @@ export default defineConfig({
     plugins: [
       {
         name: "patch-starlight-blog-page",
+        enforce: "pre",
+        resolveId(id, importer) {
+          // Intercept relative imports to libs/page from starlight-blog
+          if (
+            importer?.includes("starlight-blog") &&
+            (id === "../libs/page" || id.endsWith("/libs/page"))
+          ) {
+            return resolve(process.cwd(), "src/lib/starlight-blog-page-patch.ts");
+          }
+          // Also handle absolute paths
+          if (id.includes("starlight-blog/libs/page")) {
+            return resolve(process.cwd(), "src/lib/starlight-blog-page-patch.ts");
+          }
+          return null;
+        },
         load(id) {
-          // Intercept when loading the original file and replace with our patch
+          // Fallback: intercept when loading the original file
           if (id.includes("node_modules/starlight-blog/libs/page.ts")) {
             const filePath = resolve(
               process.cwd(),
