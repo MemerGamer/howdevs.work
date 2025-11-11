@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { blogAuthors } from '../data/blogAuthors.js';
+
+type AuthorRecord = typeof blogAuthors;
+
+type Props = {
+  posts: CollectionEntry<'docs'>[];
+  authorsMap?: AuthorRecord;
+  emptyMessage?: string;
+};
+
+const {
+  posts,
+  authorsMap = blogAuthors,
+  emptyMessage = 'No posts available.',
+} = Astro.props as Props;
+
+function createPostUrl(post: CollectionEntry<'docs'>) {
+  const slug = post.id.replace(/\/index$/, '');
+  return `/${slug}/`;
+}
+
+function getLocaleFromId(id: string) {
+  const [first] = id.split('/');
+  return first === 'hu' ? 'hu' : 'en';
+}
+
+function formatDate(value: unknown, locale: string) {
+  if (!value) return '';
+  const date = value instanceof Date ? value : new Date(value as string);
+  return date.toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+{posts.length === 0 ? (
+  <p>{emptyMessage}</p>
+) : (
+  <ul>
+    {posts.map((post) => {
+      const postUrl = createPostUrl(post);
+      const lang = getLocaleFromId(post.id);
+      const rawAuthors = post.data.authors;
+      const authorSlugs = Array.isArray(rawAuthors)
+        ? rawAuthors
+        : rawAuthors
+          ? [rawAuthors]
+          : [];
+      const authors = authorSlugs
+        .map((slug) => (typeof slug === 'string' ? slug : undefined))
+        .filter((slug): slug is string => Boolean(slug))
+        .map((slug) => ({
+          slug,
+          name: authorsMap[slug as keyof AuthorRecord]?.name ?? slug,
+          url: `/${lang}/authors/${slug}/`,
+        }));
+      const datetimeValue = post.data.date instanceof Date ? post.data.date.toISOString() : (post.data.date as
+        | string
+        | undefined);
+
+      return (
+        <li>
+          <h2>
+            <a href={postUrl}>{post.data.title}</a>
+          </h2>
+          <p>
+            <time datetime={datetimeValue ?? ''}>{formatDate(post.data.date, lang)}</time>
+            {authors.length > 0 && (
+              <>
+                {' · '}
+                {authors.map((author, index) => (
+                  <span>
+                    {index > 0 && ', '}
+                    <a href={author.url}>{author.name}</a>
+                  </span>
+                ))}
+              </>
+            )}
+          </p>
+          <p>
+            <a href={postUrl}>Read more →</a>
+          </p>
+        </li>
+      );
+    })}
+  </ul>
+)}
+

@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import ContentPanel from '@astrojs/starlight/components/ContentPanel.astro';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import PostList from '../../components/PostList.astro';
+import { blogAuthors } from '../../data/blogAuthors.js';
+import { blogLanguages } from '../../data/blogLanguages.ts';
+
+function toTimestamp(value: unknown): number {
+  if (value instanceof Date) return value.getTime();
+  if (typeof value === 'string') return new Date(value).getTime();
+  return 0;
+}
+
+const englishPosts = (await getCollection('docs', ({ id }) => id.startsWith('en/blog/')))
+  .filter((entry) => entry.data?.date)
+  .sort((a, b) => toTimestamp(b.data.date) - toTimestamp(a.data.date));
+
+const latestEnglish = englishPosts.slice(0, 3);
+const authorsMap = blogAuthors;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'howdevs.work · English',
+    description: 'Real stories from developers building products, leading teams, and shipping code.',
+    date: new Date('2025-11-11'),
+  }}
+>
+  <ContentPanel>
+    <h1>Hey there! Welcome to howdevs.work</h1>
+    <p>
+      We're developers writing about the stuff that actually matters: the messy parts of building software, 
+      the team dynamics nobody talks about, and the hard-won lessons we wish someone had shared with us.
+    </p>
+    <p>
+      This isn't your typical tech blog full of perfect tutorials. It's more like the conversations you have 
+      with colleagues over coffee - honest, practical, and hopefully useful.
+    </p>
+    <p>
+      <em>Olvasnád magyarul?</em> <a href="/hu/">Check out our Hungarian content →</a>
+    </p>
+  </ContentPanel>
+
+  <ContentPanel>
+    <h2>What we write about</h2>
+    <div class="language-cards">
+      {blogLanguages.map((lang) => (
+        <article class="language-card">
+          <header>
+            <span class="badge">{lang.label}</span>
+            <h3>{lang.title}</h3>
+          </header>
+          <p>{lang.description}</p>
+          <a class="cta" href={lang.href}>
+            {lang.cta} →
+          </a>
+        </article>
+      ))}
+    </div>
+  </ContentPanel>
+
+  <ContentPanel>
+    <h2>Latest posts</h2>
+    <PostList
+      posts={latestEnglish}
+      authorsMap={authorsMap}
+      emptyMessage="We're just getting started! First posts coming soon."
+    />
+    <p>
+      <a href="/en/blog/">See all our English posts →</a>
+    </p>
+  </ContentPanel>
+</StarlightPage>
+
+<style>
+  .language-cards {
+    margin-bottom: 1.5rem;
+  }
+</style>

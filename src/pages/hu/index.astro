@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import ContentPanel from '@astrojs/starlight/components/ContentPanel.astro';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import PostList from '../../components/PostList.astro';
+import { blogAuthors } from '../../data/blogAuthors.js';
+import { blogLanguages } from '../../data/blogLanguages.ts';
+
+function toTimestamp(value: unknown): number {
+  if (value instanceof Date) return value.getTime();
+  if (typeof value === 'string') return new Date(value).getTime();
+  return 0;
+}
+
+const hungarianPosts = (await getCollection('docs', ({ id }) => id.startsWith('hu/blog/')))
+  .filter((entry) => entry.data?.date)
+  .sort((a, b) => toTimestamp(b.data.date) - toTimestamp(a.data.date));
+
+const latestHungarian = hungarianPosts.slice(0, 3);
+const authorsMap = blogAuthors;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'howdevs.work · Magyar',
+    description: 'Valódi történetek fejlesztőktől: szoftverfejlesztés, csapatvezetés, és minden, amiről senki sem beszél.',
+    date: new Date('2025-11-11'),
+  }}
+>
+  <ContentPanel>
+    <h1>Üdv. a howdevs.work blogon!</h1>
+    <p>
+      Mi fejlesztők vagyunk, és azokról a dolgokról írunk, amik tényleg számítanak: a szoftverfejlesztés zűrös részeiről, 
+      a csapatdinamikákról, amikről senki sem beszél, és azokról a kemény leckékről, amiket bárcsak valaki 
+      megosztott volna velünk korábban.
+    </p>
+    <p>
+      Ez nem egy tipikus tech blog tele tökéletes tutorialokkal. Inkább olyan, mint azok a beszélgetések, 
+      amiket kollégáiddal folytatsz kávé mellett - őszinte, praktikus, és remélhetőleg hasznos.
+    </p>
+  </ContentPanel>
+
+  <ContentPanel>
+    <h2>Miről írunk</h2>
+    <div class="language-cards">
+      {blogLanguages.map((lang) => (
+        <article class="language-card">
+          <header>
+            <span class="badge">{lang.label}</span>
+            <h3>{lang.title}</h3>
+          </header>
+          <p>{lang.description}</p>
+          <a class="cta" href={lang.href}>
+            {lang.cta} →
+          </a>
+        </article>
+      ))}
+    </div>
+  </ContentPanel>
+
+  <ContentPanel>
+    <h2>Legfrissebb bejegyzések</h2>
+    <PostList
+      posts={latestHungarian}
+      authorsMap={authorsMap}
+      emptyMessage="Most kezdjük el! Az első bejegyzések hamarosan jönnek."
+    />
+    <p>
+      <a href="/hu/blog/">Összes magyar bejegyzés →</a>
+    </p>
+  </ContentPanel>
+</StarlightPage>
+
+<style>
+  .language-cards {
+    margin-bottom: 1.5rem;
+  }
+</style>

@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+:root {
+  --sl-text-font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  --sl-heading-font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+  --sl-nav-title-font-family: 'Pacifico', cursive;
+}
+
+/* Navbar title styling */
+:global(.sl-nav-title),
+:global([data-site-title]),
+:global(.site-title) {
+  font-family: var(--sl-nav-title-font-family) !important;
+  font-weight: 400 !important;
+}
+
+:global(header a[href="/"]) {
+  font-family: var(--sl-nav-title-font-family) !important;
+  font-weight: 400 !important;
+}
+
+:global(.language-cards) {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+:global(.language-card) {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--sl-color-hairline);
+  background: var(--sl-color-surface-2);
+  display: grid;
+  gap: 1rem;
+  min-height: 220px;
+}
+
+:global(.language-card h3),
+:global(.language-card h2) {
+  margin: 0;
+}
+
+:global(.language-card p) {
+  margin: 0;
+  color: var(--sl-color-text-muted);
+}
+
+:global(.language-card .badge) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--sl-color-surface-3);
+  color: var(--sl-color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+:global(.language-card .cta) {
+  align-self: end;
+  display: inline-flex;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--sl-color-accent);
+}
+
+:global(.language-card .cta:hover),
+:global(.language-card .cta:focus) {
+  text-decoration: underline;
+}
+
