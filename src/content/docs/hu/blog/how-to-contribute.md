@@ -117,6 +117,21 @@ Ahelyett hogy azt írnád, hogy "a mikroszerviszek bonyolultak", mesélj arról,
 
 A kód példák nagyszerűek, amikor illusztrálnak egy gondolatot. De ne töltsd ide az egész kódbázisodat, csak a releváns részeket.
 
+### Használj diagramokat, amikor segít a magyarázatban
+
+Használhatsz Mermaid diagramokat a munkafolyamatok, architektúra vagy más folyamatok illusztrálásához. Íme egy példa:
+
+```mermaid
+flowchart TD
+    A[Repo Forkolása] --> B[Szerző Hozzáadása]
+    B --> C[Poszt Írása]
+    C --> D[Lokális Tesztelés]
+    D --> E[PR Beküldése]
+    E --> F{Átnézés}
+    F -->|Jóváhagyva| G[Publikálva!]
+    F -->|Változtatás Szükséges| C
+```
+
 ### Mesélj valódi tapasztalatokról
 
 A legjobb posztok valódi problémákból származnak, amiket megoldottál, nem elméleti forgatókönyvekből. Mit tanultál? Mi lepett meg?

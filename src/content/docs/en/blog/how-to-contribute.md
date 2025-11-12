@@ -117,6 +117,21 @@ Instead of "microservices are complex," tell us about the time you spent three d
 
 Code examples are great when they illustrate a point. But don't dump your entire codebase – just the relevant bits.
 
+### Use diagrams when helpful
+
+You can use Mermaid diagrams to illustrate workflows, architecture, or processes. Here's an example:
+
+```mermaid
+flowchart TD
+    A[Fork Repo] --> B[Add Author]
+    B --> C[Write Post]
+    C --> D[Test Locally]
+    D --> E[Submit PR]
+    E --> F{Review}
+    F -->|Approved| G[Published!]
+    F -->|Needs Changes| C
+```
+
 ### Use your real experience
 
 The best posts come from actual problems you've solved, not theoretical scenarios. What did you learn the hard way? What surprised you?
