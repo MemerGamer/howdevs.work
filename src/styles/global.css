@@ -75,3 +75,9 @@
   text-decoration: underline;
 }
 
+/* Ensure RSS icon displays properly in navbar */
+:global(header a[href*="rss.xml"]) {
+  display: inline-flex;
+  align-items: center;
+}
+

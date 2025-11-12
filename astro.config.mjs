@@ -74,6 +74,25 @@ export default defineConfig({
       description:
         "howdevs.work is a developer-centric blog sharing engineering culture, tooling insights, and multilingual perspectives.",
       customCss: ["./src/styles/global.css"],
+      head: [
+        {
+          tag: "script",
+          attrs: {
+            is: "inline",
+          },
+          content: `
+            // Make RSS link locale-aware
+            document.addEventListener('DOMContentLoaded', () => {
+              const rssLink = document.querySelector('header a[href*="rss.xml"]');
+              if (rssLink) {
+                const path = window.location.pathname;
+                const locale = path.startsWith('/hu/') ? 'hu' : 'en';
+                rssLink.href = \`/\${locale}/blog/rss.xml\`;
+              }
+            });
+          `,
+        },
+      ],
       plugins: [
         starlightBlog({
           navigation: "header-end",
