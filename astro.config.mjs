@@ -4,38 +4,19 @@ import pagefind from "astro-pagefind";
 import mermaid from "astro-mermaid";
 import starlightBlog from "starlight-blog";
 import { blogAuthors } from "./src/data/blogAuthors.js";
-import { readFileSync } from "fs";
-import { resolve } from "path";
 
 export default defineConfig({
   site: "https://howdevs.work",
   vite: {
     plugins: [
       {
-        name: "patch-starlight-blog-page",
+        // starlight-blog's getPageProps() omits `date`, which the extended docs
+        // schema requires for the blog tag/author pages. Inject it.
+        name: "patch-starlight-blog-page-date",
         enforce: "pre",
-        resolveId(id, importer) {
-          // Intercept relative imports to libs/page from starlight-blog
-          if (
-            importer?.includes("starlight-blog") &&
-            (id === "../libs/page" || id.endsWith("/libs/page"))
-          ) {
-            return resolve(process.cwd(), "src/lib/starlight-blog-page-patch.ts");
-          }
-          // Also handle absolute paths
-          if (id.includes("starlight-blog/libs/page")) {
-            return resolve(process.cwd(), "src/lib/starlight-blog-page-patch.ts");
-          }
-          return null;
-        },
-        load(id) {
-          // Fallback: intercept when loading the original file
-          if (id.includes("node_modules/starlight-blog/libs/page.ts")) {
-            const filePath = resolve(
-              process.cwd(),
-              "src/lib/starlight-blog-page-patch.ts"
-            );
-            return readFileSync(filePath, "utf-8");
+        transform(code, id) {
+          if (id.replace(/\\/g, "/").includes("starlight-blog/libs/page.ts")) {
+            return code.replace("pagefind: false,", "pagefind: false,\n      date: new Date(),");
           }
           return null;
         },
@@ -57,7 +38,6 @@ export default defineConfig({
         alt: "howdevs.work logo",
       },
       defaultLocale: "en",
-      head: [],
       locales: {
         en: {
           label: "English",
@@ -70,7 +50,6 @@ export default defineConfig({
           sidebar: [],
         },
       },
-      tagline: "Developer stories, deep dives, and team practices.",
       description:
         "howdevs.work is a developer-centric blog sharing engineering culture, tooling insights, and multilingual perspectives.",
       customCss: ["./src/styles/global.css"],
