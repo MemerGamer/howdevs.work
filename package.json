@@ -16,7 +16,10 @@
     "astro-mermaid": "^1.1.0",
     "astro-pagefind": "^1.8.5",
     "mermaid": "^11.12.1",
-    "sharp": "^0.34.2",
+    "sharp": "^0.35.5",
     "starlight-blog": "^0.25.0"
+  },
+  "overrides": {
+    "sharp": "$sharp"
   }
 }
